@@ -1,25 +1,44 @@
-#include <GL/glut.h>
- 
-void displayMe(void)
+// Включаем стандартные заголовки
+#include <stdio.h>
+#include <stdlib.h>
+
+// Включаем GLEW. Всегда включайте его ДО gl.h и glfw.h
+#include <GL/glew.h>
+
+// Включаем GLFW
+#include <GLFW/glfw3.h>
+
+// Включаем GLM
+#include <glm/glm.hpp>
+using namespace glm;
+
+int main(){
+// Инициализируем GLFW
+if( !glfwInit() )
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glBegin(GL_POLYGON);
-        glVertex3f(0.5, 0.0, 0.5);
-        glVertex3f(0.5, 0.0, 0.0);
-        glVertex3f(0.0, 0.5, 0.0);
-        glVertex3f(0.0, 0.0, 0.5);
-    glEnd();
-    glFlush();
+    fprintf( stderr, "Ошибка при инициализации GLFWn" );
+    return -1;
 }
- 
-int main(int argc, char** argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE);
-    glutInitWindowSize(400, 300);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("Hello world!");
-    glutDisplayFunc(displayMe);
-    glutMainLoop();
-    return 0;
+glfwWindowHint(GLFW_FSAA_SAMPLES, 4); // 4x Сглаживание
+glfwWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3); // Мы хотим использовать OpenGL 3.3
+glfwWindowHint(GLFW_OPENGL_VERSION_MINOR, 3);
+glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Мы не хотим старый OpenGL
+
+// Открыть окно и создать в нем контекст OpenGL
+GLFWwindow* window; // (В сопроводительном исходном коде эта переменная является глобальной)
+window = glfwCreateWindow( 1024, 768, "Tutorial 01", NULL, NULL);
+if( window == NULL ){
+	fprintf( stderr, "Невозможно открыть окно GLFW. Если у вас Intel GPU, то он не поддерживает версию 3.3. Попробуйте версию уроков для OpenGL 2.1.n" );
+	glfwTerminate();
+	return -1;
+}
+glfwMakeContextCurrent(window);
+
+// Инициализируем GLEW
+glewExperimental=true; // Флаг необходим в Core-режиме OpenGL
+if (glewInit() != GLEW_OK) {
+    fprintf(stderr, "Невозможно инициализировать GLEWn");
+    return -1;
+}
 }
